@@ -36,12 +36,4 @@ class ChangePasswordForm extends Model
             }
         }
     }
-
-    public function save($user){
-        if ($this->validate()) {
-            $user->setPassword($this->newPassword);
-            return $user->save();
-        }
-        return false;
-    }
 }
