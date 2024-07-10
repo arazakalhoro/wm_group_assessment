@@ -18,6 +18,9 @@ $this->registerMetaTag(['name' => 'viewport', 'content' => 'width=device-width, 
 $this->registerMetaTag(['name' => 'description', 'content' => $this->params['meta_description'] ?? '']);
 $this->registerMetaTag(['name' => 'keywords', 'content' => $this->params['meta_keywords'] ?? '']);
 $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii::getAlias('@web/favicon.ico')]);
+
+// Include FontAwesome for icons
+$this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css');
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -36,24 +39,40 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
         'brandUrl' => Yii::$app->homeUrl,
         'options' => ['class' => 'navbar-expand-md navbar-dark bg-dark fixed-top']
     ]);
+
+    $menuItems = [];
+
+    // Check if user is authenticated and has the Administrator role
+    if (!Yii::$app->user->isGuest
+        && Yii::$app->user->identity->getRole()->getAttribute('name') == 'Administrator') {
+        $menuItems[] = ['label' => 'Users', 'url' => ['/user/index']];
+    }
+
+    if (Yii::$app->user->isGuest) {
+        $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
+    } else {
+        $menuItems[] = [
+            'label' => '<i class="fas fa-user"></i>',
+            'encode' => false,
+            'items' => [
+                ['label' => 'Profile', 'url' => ['/user/profile']],
+                ['label' => 'Change Password', 'url' => ['/user/changepassword']],
+                [
+                    'label' => 'Logout',
+                    'url' => ['/site/logout'],
+                    'linkOptions' => ['data-method' => 'post'],
+                ],
+            ],
+            'linkOptions' => ['class' => 'nav-link dropdown-toggle', 'id' => 'navbarDropdown', 'data-bs-toggle' => 'dropdown', 'aria-haspopup' => 'true', 'aria-expanded' => 'false'],
+            'dropdownOptions' => ['class' => 'dropdown-menu dropdown-menu-right', 'aria-labelledby' => 'navbarDropdown'],
+        ];
+    }
+
     echo Nav::widget([
-        'options' => ['class' => 'navbar-nav'],
-        'items' => [
-            ['label' => 'Home', 'url' => ['/site/index']],
-            ['label' => 'About', 'url' => ['/site/about']],
-            ['label' => 'Contact', 'url' => ['/site/contact']],
-            Yii::$app->user->isGuest
-                ? ['label' => 'Login', 'url' => ['/site/login']]
-                : '<li class="nav-item">'
-                    . Html::beginForm(['/site/logout'])
-                    . Html::submitButton(
-                        'Logout (' . Yii::$app->user->identity->username . ')',
-                        ['class' => 'nav-link btn btn-link logout']
-                    )
-                    . Html::endForm()
-                    . '</li>'
-        ]
+        'options' => ['class' => 'navbar-nav ml-auto'],
+        'items' => $menuItems,
     ]);
+
     NavBar::end();
     ?>
 </header>
@@ -78,6 +97,11 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
 </footer>
 
 <?php $this->endBody() ?>
+<style>
+    .invalid-feedback {
+        display: block;
+    }
+</style>
 </body>
 </html>
 <?php $this->endPage() ?>
