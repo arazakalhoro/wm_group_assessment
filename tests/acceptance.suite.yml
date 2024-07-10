@@ -1,0 +1,12 @@
+actor: AcceptanceTester
+modules:
+  enabled:
+    - WebDriver:
+        url: 'http://localhost/'
+        browser: chrome  # Or chrome, depending on your setup
+        port: 4444  # Ensure this matches the WebDriver server port
+
+    - Yii2:
+        part: orm
+        entryScript: index-test.php
+        cleanup: false

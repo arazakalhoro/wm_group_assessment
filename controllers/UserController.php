@@ -78,9 +78,9 @@ class UserController extends Controller
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             $user->setAttribute('name', $model->name);
-            $user->setAttribute('email',$model->email);
-            $user->setAttribute('status' , $model->status);
-            $user->setAttribute('role_id' , $model->role_id);
+            $user->setAttribute('email', $model->email);
+            $user->setAttribute('status', $model->status);
+            $user->setAttribute('role_id', $model->role_id);
 
             if (!empty($model->password)) {
                 $user->setAttribute('password', Yii::$app->security->generatePasswordHash($model->password));
@@ -115,10 +115,10 @@ class UserController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             $user = new User();
             $user->setAttribute('name', $model->name);
-            $user->setAttribute('email' , $model->email);
-            $user->setAttribute('status' , $model->status);
-            $user->setAttribute('role_id' , $model->role_id);
-            $user->setAttribute('password' , $model->password);
+            $user->setAttribute('email', $model->email);
+            $user->setAttribute('status', $model->status);
+            $user->setAttribute('role_id', $model->role_id);
+            $user->setAttribute('password', $model->password);
             if ($user->save()) {
                 Yii::$app->session->setFlash('success', 'User registered successfully.');
                 return $this->redirect(['index']);

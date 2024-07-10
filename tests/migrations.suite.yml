@@ -1,0 +1,7 @@
+actor: MigrationsTester
+modules:
+    enabled:
+        - Yii2:
+              configFile: 'config/test.php'
+        - Helper\MigrationHelper
+        - Asserts
